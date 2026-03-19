@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Mood Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.92);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2C3E50;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #34495E;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+        
+        button {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+            padding: 0.5rem;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 4px;
+        }
+        
+        /* Mood Page Styles */
+        .mood-container {
+            display: none;
+        }
+        
+        .mood-options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .mood-btn {
+            padding: 0.7rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .mood-btn:hover {
+            background-color: #f5f7fa;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mood-btn.active {
+            background-color: #4285f4;
+            color: white;
+            border-color: #4285f4;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(66, 133, 244, 0.3);
+        }
+        
+        .activities-container {
+            margin-top: 2rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .activities-container h2 {
+            margin-top: 0;
+            color: #2C3E50;
+            font-size: 1.2rem;
+        }
+        
+        .activity-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .activity-list li {
+            padding: 0.85rem;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
+        }
+        
+        .activity-list li:hover {
+            background-color: rgba(240, 240, 240, 0.5);
+        }
+        
+        .activity-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #3498db;
+        }
+        
+        .logout-btn {
+            background-color: #e74c3c;
+            margin-top: 2rem;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Signup page styles */
+        .signup-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: #7f8c8d;
+        }
+        
+        .signup-link {
+            color: #4285f4;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        
+        .signup-link:hover {
+            color: #3367d6;
+            text-decoration: underline;
+        }
+        
+        #signup-page {
+            display: none;
+        }
+        
+        .back-btn {
+            background-color: #95a5a6;
+            margin-top: 0.8rem;
+        }
+        
+        .back-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .input-error {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        /* Add animation for page transitions */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container {
+            animation: fadeIn 0.4s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="container" id="login-page">
+        <h1>Login</h1>
+        <p class="welcome-text" style="font-size: 1.2rem; font-weight: bold; color: #4285f4;">Welcome to MOOD ENHANCER!</p>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+        <button id="login-btn">Login</button>
+        <p class="error-message" id="login-error">Invalid username or password!</p>
+        <p class="signup-text">Don't have an account? <span class="signup-link" id="show-signup">Create an account</span></p>
+    </div>
+    
+    <!-- Signup Page -->
+    <div class="container" id="signup-page">
+        <h1>Create Account</h1>
+        <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" placeholder="Enter your full name">
+            <p class="input-error" id="name-error">Please enter your full name</p>
+        </div>
+        <div class="form-group">
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" placeholder="Choose a username">
+            <p class="input-error" id="username-error">Username must be at least 3 characters</p>
+        </div>
+        <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Create a password">
+            <p class="input-error" id="password-error">Password must be at least 6 characters</p>
+        </div>
+        <div class="form-group">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" placeholder="Enter your email">
+            <p class="input-error" id="email-error">Please enter a valid email address</p>
+        </div>
+        <div class="form-group">
+            <label for="signup-phone">Phone Number</label>
+            <input type="tel" id="signup-phone" placeholder="Enter your phone number">
+            <p class="input-error" id="phone-error">Please enter a valid phone number</p>
+        </div>
+        <button id="signup-btn">Create Account</button>
+        <button class="back-btn" id="back-to-login-btn">Back to Login</button>
+    </div>
+    
+    <!-- Mood Page -->
+    <div class="container mood-container" id="mood-page">
+        <h1>Mood Tracker</h1>
+        <p class="welcome-text">Welcome, <span id="user-name">User</span>! How are you feeling today?</p>
+        
+        <div class="mood-options">
+            <button class="mood-btn" data-mood="happy">Happy</button>
+            <button class="mood-btn" data-mood="calm">Calm</button>
+            <button class="mood-btn" data-mood="sad">Sad</button>
+            <button class="mood-btn" data-mood="energetic">Energetic</button>
+        </div>
+        
+        <div class="activities-container">
+            <h2>Recommended Activities</h2>
+            <ul class="activity-list" id="activity-list">
+                <li>Select a mood to see recommended activities</li>
+            </ul>
+        </div>
+        
+        <button id="proceed-to-feedback-btn" style="background-color: #27ae60; margin-top: 1.5rem;">Proceed to Feedback</button>
+        <button class="logout-btn" id="logout-btn">Logout</button>
+    </div>
+    
+    <!-- Feedback Page -->
+    <div class="container mood-container" id="feedback-page" style="display: none;">
+        <h1>Activity Feedback</h1>
+        
+        <div class="form-group">
+            <label for="feeling-after">How did you feel after the activity?</label>
+            <textarea id="feeling-after" rows="3" placeholder="Share your feelings..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="worthwhile">Was the activity worthwhile? Why or why not?</label>
+            <textarea id="worthwhile" rows="3" placeholder="Please explain..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="general-feedback">Would you like to give any additional feedback?</label>
+            <textarea id="general-feedback" rows="4" placeholder="Your feedback is valuable to us..."></textarea>
+        </div>
+        
+        <button id="submit-feedback-btn" style="background-color: #27ae60;">Submit Feedback</button>
+        <button id="quit-btn" style="background-color: #e74c3c; margin-top: 1rem;">Quit</button>
+        <button id="back-to-mood-btn" style="background-color: #3498db; margin-top: 1rem;">Back to Mood Selection</button>
+    </div>
+    
+    <script>
+        // Sample user data (in a real app, this would be server-side)
+        const users = [
+            { username: "shampa", password: "s@#123", name: "Shampa" },
+            { username: "akriti", password: "Ak_0606", name: "Akriti" },
+            { username: "farid", password: "Fareed@678", name: "Farid" },
+            { username: "nazli", password: "nazli_5053", name: "Nazli" },
+            { username: "asumaan", password: "Asu000mann", name: "Asumaan" },
+            { username: "user", password: "password", name: "User" }
+        ];
+        
+        // Activity recommendations by mood
+        const activities = {
+            happy: [
+                "Go for a walk in nature",
+                "Call a friend to share your happiness",
+                "Start a creative project",
+                "Dance to your favorite music"
+            ],
+            calm: [
+                "Practice meditation for 10 minutes",
+                "Read a book with a cup of tea",
+                "Do some gentle stretching",
+                "Write in your journal"
+            ],
+            sad: [
+                "Watch a feel-good movie",
+                "Write down three things you're grateful for",
+                "Take a warm bath or shower",
+                "Listen to uplifting music"
+            ],
+            energetic: [
+                "Go for a run or quick workout",
+                "Clean or organize part of your home",
+                "Start a challenging project",
+                "Play an active game"
+            ]
+        };
+        
+        // DOM Elements
+        const loginPage = document.getElementById("login-page");
+        const moodPage = document.getElementById("mood-page");
+        const signupPage = document.getElementById("signup-page");
+        const loginBtn = document.getElementById("login-btn");
+        const logoutBtn = document.getElementById("logout-btn");
+        const showSignupBtn = document.getElementById("show-signup");
+        const backToLoginBtn = document.getElementById("back-to-login-btn");
+        const signupBtn = document.getElementById("signup-btn");
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const loginError = document.getElementById("login-error");
+        const userNameSpan = document.getElementById("user-name");
+        const moodButtons = document.querySelectorAll(".mood-btn");
+        const activityList = document.getElementById("activity-list");
+        
+        // Login functionality
+        loginBtn.addEventListener("click", () => {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                // Successful login
+                loginPage.style.display = "none";
+                moodPage.style.display = "block";
+                userNameSpan.textContent = user.name;
+                
+                // Clear form and error
+                usernameInput.value = "";
+                passwordInput.value = "";
+                loginError.style.display = "none";
+            } else {
+                // Failed login
+                loginError.style.display = "block";
+            }
+        });
+        
+        // Show signup page
+        showSignupBtn.addEventListener("click", () => {
+            loginPage.style.display = "none";
+            signupPage.style.display = "block";
+        });
+        
+        // Back to login
+        backToLoginBtn.addEventListener("click", () => {
+            signupPage.style.display = "none";
+            loginPage.style.display = "block";
+            
+            // Clear all signup form errors
+            document.querySelectorAll(".input-error").forEach(error => {
+                error.style.display = "none";
+            });
+            
+            // Clear signup form inputs
+            document.getElementById("signup-name").value = "";
+            document.getElementById("signup-username").value = "";
+            document.getElementById("signup-password").value = "";
+            document.getElementById("signup-email").value = "";
+            document.getElementById("signup-phone").value = "";
+        });
+        
+        // Signup functionality
+        signupBtn.addEventListener("click", () => {
+            // Get form values
+            const name = document.getElementById("signup-name").value;
+            const username = document.getElementById("signup-username").value;
+            const password = document.getElementById("signup-password").value;
+            const email = document.getElementById("signup-email").value;
+            const phone = document.getElementById("signup-phone").value;
+            
+            // Reset all error messages
+            document.querySelectorAll(".input-error").forEach(error => {
+                error.style.display = "none";
+            });
+            
+            // Validate inputs
+            let isValid = true;
+            
+            // Name validation
+            if (!name.trim()) {
+                document.getElementById("name-error").style.display = "block";
+                isValid = false;
+            }
+            
+            // Username validation
+            if (username.length < 3) {
+                document.getElementById("username-error").style.display = "block";
+                isValid = false;
+            } else if (users.some(u => u.username === username)) {
+                document.getElementById("username-error").textContent = "Username already exists";
+                document.getElementById("username-error").style.display = "block";
+                isValid = false;
+            }
+            
+            // Password validation
+            if (password.length < 6) {
+                document.getElementById("password-error").style.display = "block";
+                isValid = false;
+            }
+            
+            // Email validation
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                document.getElementById("email-error").style.display = "block";
+                isValid = false;
+            }
+            
+            // Phone validation
+            const phonePattern = /^\d{10}$/;
+            if (!phonePattern.test(phone.replace(/\D/g, ''))) {
+                document.getElementById("phone-error").style.display = "block";
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Add new user
+                users.push({
+                    username: username,
+                    password: password,
+                    name: name,
+                    email: email,
+                    phone: phone
+                });
+                
+                // Go directly to mood page
+                signupPage.style.display = "none";
+                moodPage.style.display = "block";
+                userNameSpan.textContent = name;
+                
+                // Clear signup form
+                document.getElementById("signup-name").value = "";
+                document.getElementById("signup-username").value = "";
+                document.getElementById("signup-password").value = "";
+                document.getElementById("signup-email").value = "";
+                document.getElementById("signup-phone").value = "";
+            }
+        });
+        
+        // Logout functionality
+        logoutBtn.addEventListener("click", () => {
+            loginPage.style.display = "block";
+            moodPage.style.display = "none";
+            feedbackPage.style.display = "none";
+        });
+        
+        // Proceed to feedback functionality
+        const proceedToFeedbackBtn = document.getElementById("proceed-to-feedback-btn");
+        const feedbackPage = document.getElementById("feedback-page");
+        const backToMoodBtn = document.getElementById("back-to-mood-btn");
+        const submitFeedbackBtn = document.getElementById("submit-feedback-btn");
+        const quitBtn = document.getElementById("quit-btn");
+        
+        proceedToFeedbackBtn.addEventListener("click", () => {
+            moodPage.style.display = "none";
+            feedbackPage.style.display = "block";
+        });
+        
+        backToMoodBtn.addEventListener("click", () => {
+            feedbackPage.style.display = "none";
+            moodPage.style.display = "block";
+        });
+        
+        submitFeedbackBtn.addEventListener("click", () => {
+            // In a real application, this would save the feedback to a database
+            const feelingAfter = document.getElementById("feeling-after").value;
+            const worthwhile = document.getElementById("worthwhile").value;
+            const generalFeedback = document.getElementById("general-feedback").value;
+            
+            alert("Thank you for your feedback!");
+            
+            // Clear feedback form
+            document.getElementById("feeling-after").value = "";
+            document.getElementById("worthwhile").value = "";
+            document.getElementById("general-feedback").value = "";
+            
+            // Return to mood page
+            feedbackPage.style.display = "none";
+            moodPage.style.display = "block";
+        });
+        
+        quitBtn.addEventListener("click", () => {
+            // In a real application, this might handle some cleanup tasks
+            alert("Thank you for using our app. Goodbye!");
+            loginPage.style.display = "block";
+            feedbackPage.style.display = "none";
+            moodPage.style.display = "none";
+            
+            // Clear all forms
+            document.getElementById("feeling-after").value = "";
+            document.getElementById("worthwhile").value = "";
+            document.getElementById("general-feedback").value = "";
+            usernameInput.value = "";
+            passwordInput.value = "";
+        });
+        
+        // Mood selection functionality
+        moodButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                // Remove active class from all buttons
+                moodButtons.forEach(btn => btn.classList.remove("active"));
+                
+                // Add active class to clicked button
+                button.classList.add("active");
+                
+                // Get selected mood
+                const mood = button.getAttribute("data-mood");
+                
+                // Display activities for the selected mood
+                displayActivities(mood);
+            });
+        });
+        
+        // Function to display activities based on mood
+        function displayActivities(mood) {
+            const moodActivities = activities[mood];
+            
+            // Clear existing activities
+            activityList.innerHTML = "";
+            
+            // Add activities for the selected mood
+            moodActivities.forEach(activity => {
+                const li = document.createElement("li");
+                li.textContent = activity;
+                activityList.appendChild(li);
+            });
+        }
+
+        // Add keyboard enter key event for login form
+        passwordInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                loginBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
